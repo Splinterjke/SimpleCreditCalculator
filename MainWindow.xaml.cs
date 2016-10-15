@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Threading;
 using MahApps.Metro.Controls.Dialogs;
 
-namespace KIU_2016
+namespace CreditCalc
 {
     public class DataGrid
     {
