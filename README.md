@@ -1,6 +1,7 @@
 # SimpleCreditCalculator (no MVVM)
 Калькулятор аннуитетных/дифференцированных платежей (без соблюдения MVVM паттерна)
 
+[![](http://s5.picofile.com/file/8155175450/images_copy.png)](https://github.com/Splinterjke/SimpleCreditCalculator/releases "Скачать")
 ## Requirements
 
 * [Microsoft .NET Framework 4.0](https://www.microsoft.com/en-US/download/details.aspx?id=17718)
