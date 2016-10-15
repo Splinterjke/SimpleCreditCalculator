@@ -1,5 +1,5 @@
-# SimpleCreditCalculator
-Калькулятор аннуитетных/дифференцированных платежей
+# SimpleCreditCalculator (no MVVM)
+Калькулятор аннуитетных/дифференцированных платежей (без соблюдения MVVM паттерна)
 
 ## Requirements
 
