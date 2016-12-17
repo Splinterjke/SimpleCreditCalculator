@@ -50,6 +50,7 @@ Temporary Items
 *.userosscache
 *.sln.docstates
 *.sln
+*.manifest
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
