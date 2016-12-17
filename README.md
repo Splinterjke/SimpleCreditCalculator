@@ -1,5 +1,5 @@
 # SimpleCreditCalculator (MVVM)
-Калькулятор аннуитетных/дифференцированных платежей на .NET 4.0 WPF (MVVM)
+Калькулятор аннуитетных/дифференцированных платежей на .NET 4.5.2 WPF (MVVM)
 
 [![](http://s5.picofile.com/file/8155175450/images_copy.png)](https://github.com/Splinterjke/SimpleCreditCalculator/releases "Скачать")
 ## Requirements
