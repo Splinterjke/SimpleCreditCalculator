@@ -23,9 +23,14 @@ namespace CreditCalc.ViewModels
 		public string MonthFee { get; set; }
 
 		public System.DateTime StartDate { get; set; }
+
+		public bool DiffPay { get; set; } = true;
+		public bool AnnuPay { get; set; }
 		#endregion
 
 		#region Variables
+		public event System.EventHandler IsCalculated = delegate { };
+		public event System.EventHandler IsReseted = delegate { };
 		private List<string> properties;
 		/// <summary>
 		/// Mode 'One' for atleast one property, mode 'All' for all properties
@@ -37,13 +42,19 @@ namespace CreditCalc.ViewModels
 		public InputDataViewModel(IModelValidator<InputDataViewModel> validator) : base(validator)
 		{
 			DisplayName = "ДАННЫЕ";
-
 			// Setting current date to avoid empty date property
 			StartDate = System.DateTime.Today;
 		}
 
+		protected override void OnActivate()
+		{
+			this.ClearAllPropertyErrors();
+			base.OnActivate();
+		}
+
 		protected override void OnValidationStateChanged(IEnumerable<string> changedProperties)
 		{
+			base.OnValidationStateChanged(changedProperties);
 			// Manual rasing notifier for Stylet properties
 			this.NotifyOfPropertyChange(() => this.CanCalculate);
 			this.NotifyOfPropertyChange(() => this.CanReset);
@@ -58,8 +69,22 @@ namespace CreditCalc.ViewModels
 		// Start calculation with inputed values
 		public void Calculate()
 		{
+			if(DiffPay)
+			{
+				Services.AnuCalculation calculation = new Services.AnuCalculation();
+				Models.Results result = new Models.Results();				
+				System.Diagnostics.Debug.WriteLine("Считаю дифф. платежи");
+				ResultViewModel r = new ResultViewModel();
+				this.IsCalculated(this, new System.EventArgs());
+				return;
+			}
 
-		}
+			if(AnnuPay)
+			{
+				System.Diagnostics.Debug.WriteLine("Считаю аннуит. платежи");
+				return;
+			}
+		}		
 
 		// Guard property for Reset method
 		public bool CanReset
@@ -75,6 +100,7 @@ namespace CreditCalc.ViewModels
 			YearFee = string.Empty;
 			MonthFee = string.Empty;
 			StartDate = System.DateTime.Today;
+			this.IsReseted(this, new System.EventArgs());
 		}
 
 		/// <summary>
@@ -109,4 +135,5 @@ namespace CreditCalc.ViewModels
 		}
 	}
 	#endregion
+	
 }

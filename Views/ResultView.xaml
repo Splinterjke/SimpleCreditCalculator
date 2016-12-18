@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:CreditCalc.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="325">
+             d:DesignHeight="300" d:DesignWidth="552.31">
     <Grid>
         <StackPanel>
             <DataGrid VerticalAlignment="Top" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="False" CanUserResizeRows="False" ColumnWidth="Auto" CanUserAddRows="False" SelectionMode="Single" IsReadOnly="True" FontSize="9" GridLinesVisibility="All" FontFamily="Arial">

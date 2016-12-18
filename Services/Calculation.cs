@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace CreditCalc.Services
 {
-	class Calculation
+	class AnuCalculation
 	{
-		public double MainPay(double creditSum, double creditLength)
+		public double TotalMonthPay(double creditSum, double creditLength, double yearFee)
 		{
-			return Math.Round(creditSum / creditLength, 2);
+			return Math.Round(creditSum * (yearFee +  yearFee / (Math.Pow(1 + yearFee, creditLength) - 1 )), 2);
 		}
 
 		public double ServiceFee(double creditSum, double creditLength, double monthFee)
@@ -19,14 +19,19 @@ namespace CreditCalc.Services
 			return Math.Round(creditSum * monthFee * 0.01 * creditLength, 2);
 		}
 
-		public double YearFee()
+		public double MonthFee(double remCreditSum, double yearFee)
 		{
-			return 0;
+			return Math.Round(remCreditSum * yearFee / 12, 2);
+		}
+
+		public double YearFee(double yearFee)
+		{
+			return Math.Round(yearFee/12, 2);
 		}
 		
-		public double TotalPay()
+		public double MonthPay(double totalMonthpay, double monthFee)
 		{
-			return 0;
+			return Math.Round(totalMonthpay - monthFee, 2);
 		}
 	}
 }
