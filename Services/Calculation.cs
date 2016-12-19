@@ -9,9 +9,32 @@ namespace CreditCalc.Services
 {
 	class AnuCalculation
 	{
-		public double TotalMonthPay(double creditSum, double creditLength, double yearFee)
+		public double creditSum, creditLength, monthFee, yearFee, totalMonthPay;
+
+		public void TotalMonthPay()
 		{
-			return Math.Round(creditSum * (yearFee +  yearFee / (Math.Pow(1 + yearFee, creditLength) - 1 )), 2);
+			totalMonthPay = Math.Round(creditSum * (YearFee() + YearFee() / (Math.Pow(1 + YearFee(), creditLength) - 1 )), 2);
+		}
+
+		public double YearFee()
+		{
+			return Math.Round(yearFee / 12, 2);
+		}
+
+		public double remCreditSum()
+		{
+			creditSum = creditSum - MonthPay();
+			return Math.Round(creditSum, 2);
+		}
+
+		public double MonthFee()
+		{
+			return Math.Round(remCreditSum() * YearFee(), 2);
+		}
+
+		public double MonthPay()
+		{
+			return Math.Round(totalMonthpay - MonthFee(), 2);
 		}
 
 		public double ServiceFee(double creditSum, double creditLength, double monthFee)
@@ -19,19 +42,10 @@ namespace CreditCalc.Services
 			return Math.Round(creditSum * monthFee * 0.01 * creditLength, 2);
 		}
 
-		public double MonthFee(double remCreditSum, double yearFee)
-		{
-			return Math.Round(remCreditSum * yearFee / 12, 2);
-		}
-
-		public double YearFee(double yearFee)
-		{
-			return Math.Round(yearFee/12, 2);
-		}
 		
-		public double MonthPay(double totalMonthpay, double monthFee)
-		{
-			return Math.Round(totalMonthpay - monthFee, 2);
-		}
+
+		
+		
+		
 	}
 }
