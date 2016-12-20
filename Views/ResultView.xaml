@@ -3,20 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              xmlns:local="clr-namespace:CreditCalc.Views"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="552.31">
     <Grid>
         <StackPanel>
-            <DataGrid VerticalAlignment="Top" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserSortColumns="False" CanUserResizeRows="False" ColumnWidth="Auto" CanUserAddRows="False" SelectionMode="Single" IsReadOnly="True" FontSize="9" GridLinesVisibility="All" FontFamily="Arial">
+            <DataGrid VerticalAlignment="Top" ItemsSource="{Binding AnuResults, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" CanUserResizeColumns="False" CanUserSortColumns="False" CanUserResizeRows="False" ColumnWidth="Auto" CanUserAddRows="False" SelectionMode="Single" IsReadOnly="True" FontSize="9" GridLinesVisibility="All" FontFamily="Arial" CanUserReorderColumns="False">
+                <DataGrid.Resources>
+                    <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource MetroDataGridCell}">
+                        <Setter Property="FontSize" Value="11"/>
+                    </Style>
+                </DataGrid.Resources>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Binding="{Binding Path=month}" Header="Месяц"/>
-                    <DataGridTextColumn Binding="{Binding Path=date}" Header="Дата"/>
-                    <DataGridTextColumn Binding="{Binding Path=credit}" Header="Остаток кредита"/>
-                    <DataGridTextColumn Binding="{Binding Path=mainPay}" Header="Основной платеж"/>
-                    <DataGridTextColumn Binding="{Binding Path=percent}" Header="Проценты"/>
+                    <DataGridTextColumn Binding="{Binding Path=MonthNum}" Header="Месяц"/>
+                    <DataGridTextColumn Binding="{Binding Path=Date}" Header="Дата"/>
+                    <DataGridTextColumn Binding="{Binding Path=RemCreditSum}" Header="Остаток кредита"/>
+                    <DataGridTextColumn Binding="{Binding Path=MonthPay}" Header="Основной платеж"/>
+                    <DataGridTextColumn Binding="{Binding Path=MonthFee}" Header="Проценты"/>
                     <DataGridTextColumn Binding="{Binding Path=service}" Header="Обслуживание"/>
-                    <DataGridTextColumn Binding="{Binding Path=totalPay}" Header="Всего за платеж"/>
+                    <DataGridTextColumn Binding="{Binding Path=TotalMonthPay}" Header="Всего за платеж" Width="*"/>
                 </DataGrid.Columns>
             </DataGrid>
             <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal">

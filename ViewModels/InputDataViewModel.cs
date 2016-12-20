@@ -3,9 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentValidation;
 using System.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace CreditCalc.ViewModels
 {
+	public class ResultEventArgs : System.EventArgs
+	{
+		public ObservableCollection<Models.AnuResults> arg;
+	}
+
 	#region ViewModel
 	public class InputDataViewModel : Screen
 	{
@@ -29,7 +35,7 @@ namespace CreditCalc.ViewModels
 		#endregion
 
 		#region Variables
-		public event System.EventHandler IsCalculated = delegate { };
+		public event System.EventHandler<ResultEventArgs> IsCalculated = delegate { };
 		public event System.EventHandler IsReseted = delegate { };
 		private List<string> properties;
 		/// <summary>
@@ -71,11 +77,15 @@ namespace CreditCalc.ViewModels
 		{
 			if(DiffPay)
 			{
-				Services.AnuCalculation calculation = new Services.AnuCalculation();
-				Models.Results result = new Models.Results();				
-				System.Diagnostics.Debug.WriteLine("Считаю дифф. платежи");
-				ResultViewModel r = new ResultViewModel();
-				this.IsCalculated(this, new System.EventArgs());
+				ObservableCollection<Models.AnuResults> anuResults = new ObservableCollection<Models.AnuResults>();
+				Models.AnuResults result = new Models.AnuResults()
+				{
+					CreditLength = int.Parse(this.CreditLength),
+					RemCreditSum = double.Parse(this.CreditSum),
+					YearFee = double.Parse(this.YearFee)					
+				};
+				anuResults.Add(result);
+				this.IsCalculated(this, new ResultEventArgs() { arg = anuResults });
 				return;
 			}
 

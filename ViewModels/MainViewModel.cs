@@ -8,13 +8,13 @@ namespace CreditCalc.ViewModels
 		private InputDataViewModel Tab1;
 		private ResultViewModel Tab2;
 
-		public MainViewModel(InputDataViewModel Tab1, ResultViewModel Tab2)
+		public MainViewModel(InputDataViewModel Tab1)
 		{
 			this.Tab1 = Tab1;
-			this.Tab2 = Tab2;
+			//this.Tab2 = Tab2;
 			DisplayName = "simple credit calculator";
 			this.Items.Add(this.Tab1);
-			this.Items.Add(this.Tab2);
+			//this.Items.Add(this.Tab2);
 			this.ActiveItem = this.Tab1;
 			this.Tab1.IsCalculated += Tab1_Calculated;
 			this.Tab1.IsReseted += Tab1_IsReseted;
@@ -25,8 +25,10 @@ namespace CreditCalc.ViewModels
 			
 		}
 
-		private void Tab1_Calculated(object sender, System.EventArgs e)
-		{			
+		private void Tab1_Calculated(object sender, ResultEventArgs e)
+		{
+			this.Tab2 = new ResultViewModel(e.arg);
+			this.Items.Add(this.Tab2);
 			this.ActiveItem = this.Tab2;
 		}
 	}
