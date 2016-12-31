@@ -1,21 +1,23 @@
-﻿using Stylet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.ObjectModel;
+﻿using CreditCalc.Models;
+using Stylet;
 
 namespace CreditCalc.ViewModels
 {
-	public class ResultViewModel : Screen
+	public class ResultViewModel : Screen, TabItem
 	{
-		public ObservableCollection<Models.AnuResults> AnuResults { get; set; }
+		public bool IsEnabled { get; set; }
+		public BindableCollection<AnuResults> AnuResults { get; set; }
 
-		public ResultViewModel(ObservableCollection<Models.AnuResults> anuResults)
+		public ResultViewModel()
 		{
 			DisplayName = "РЕЗУЛЬТАТ";
-			this.AnuResults = anuResults;
+			IsEnabled = false;
+		}
+
+		protected override void OnActivate()
+		{
+			base.OnActivate();
+			NotifyOfPropertyChange(() => AnuResults);
 		}
 	}
 }

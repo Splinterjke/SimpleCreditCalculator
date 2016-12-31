@@ -2,75 +2,56 @@
 
 namespace CreditCalc.Models
 {
-	public class AnuResults
+	public struct AnuResults
 	{
-		public int CreditLength;
+		public int MonthNum { get; set; }
 
-		private int _monthNum;
-		public int MonthNum
+		public DateTime Date { get; set; }
+
+		public double TotalMonthPay { get; set; }
+
+		public double MonthPay { get; set; }
+
+		public double RemCreditSum { get; set; }
+
+		public double MonthFee { get; set; }
+
+		public double ServiceFee { get; set; }
+	}
+
+	public static class AnuCalculation
+	{
+		public static int CreditLength { get; set; }
+
+		public static int CreditSum { get; set; }
+
+		private static double _totalMonthPay;
+		public static double TotalMonthPay
 		{
-			get	{ return _monthNum;	}
+			get { return _totalMonthPay; }
 			set
 			{
-				_monthNum = value;
+				_totalMonthPay = value * (YearFee + YearFee / (Math.Pow(1 + YearFee, CreditLength) - 1));
 			}
 		}
 
-		private DateTime _date;
-		public DateTime Date
-		{
-			get { return _date; }
-			set
-			{
-				_date = value;
-			}
-		}
+		public static double RemCreditSum { get; set; }
 
-		private double _remCreditSum;
-		public double RemCreditSum
-		{
-			get { return _remCreditSum; }
-			set
-			{
-				_remCreditSum = value - MonthPay;
-			}
-		}
-
-		private double _monthPay;
-		public double MonthPay
-		{
-			get { return _monthPay; }
-			set { _monthPay = TotalMonthPay - MonthFee; }
-		}
-
-		private double _monthFee;
-		public double MonthFee
-		{
-			get { return _monthFee; }
-			set { _monthFee = RemCreditSum * YearFee; }
-		}
-
-		private double _yearFee;
-		public double YearFee
+		private static double _yearFee;
+		public static double YearFee
 		{
 			get { return _yearFee; }
-			set
-			{
-				_yearFee = value;
-			}
+			set { _yearFee = value / 100 / 12; }
 		}
 
-		public double serviceFee
+		public static double MonthPay
 		{
-			get;
-			set;
-		}
+			get { return TotalMonthPay - MonthFee; }
+		}		
 
-		private double _totalMonthPay;		
-		public double TotalMonthPay
+		public static double MonthFee
 		{
-			get { return _totalMonthPay;  }
-			set { _totalMonthPay = RemCreditSum *(YearFee + YearFee / (Math.Pow(1 + YearFee, CreditLength) - 1)); }
+			get { return RemCreditSum * YearFee; }
 		}
 	}
 }

@@ -3,17 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentValidation;
 using System.ComponentModel;
-using System.Collections.ObjectModel;
+using System.Windows;
+using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
+using System.Threading.Tasks;
 
 namespace CreditCalc.ViewModels
 {
-	public class ResultEventArgs : System.EventArgs
-	{
-		public ObservableCollection<Models.AnuResults> arg;
-	}
-
 	#region ViewModel
-	public class InputDataViewModel : Screen
+	public class InputDataViewModel : Screen, TabItem
 	{
 		#region Properties
 		[DisplayName("Сумма кредита")]
@@ -35,9 +33,8 @@ namespace CreditCalc.ViewModels
 		#endregion
 
 		#region Variables
-		public event System.EventHandler<ResultEventArgs> IsCalculated = delegate { };
-		public event System.EventHandler IsReseted = delegate { };
 		private List<string> properties;
+		private Conductor<IScreen>.Collection.OneActive Conductor;
 		/// <summary>
 		/// Mode 'One' for atleast one property, mode 'All' for all properties
 		/// </summary>
@@ -55,6 +52,7 @@ namespace CreditCalc.ViewModels
 		protected override void OnActivate()
 		{
 			this.ClearAllPropertyErrors();
+			Conductor = (this.Parent as Conductor<IScreen>.Collection.OneActive);
 			base.OnActivate();
 		}
 
@@ -72,29 +70,56 @@ namespace CreditCalc.ViewModels
 			get { return !HasErrors && CheckFields(Mode.All); }
 		}
 
-		// Start calculation with inputed values
-		public void Calculate()
+		// Manual implementation of MetroMahapps dialog message
+		public async Task<MessageDialogResult> ShowMessageAsync(string title, string message, MessageDialogStyle dialogStyle)
 		{
-			if(DiffPay)
-			{
-				ObservableCollection<Models.AnuResults> anuResults = new ObservableCollection<Models.AnuResults>();
-				Models.AnuResults result = new Models.AnuResults()
-				{
-					CreditLength = int.Parse(this.CreditLength),
-					RemCreditSum = double.Parse(this.CreditSum),
-					YearFee = double.Parse(this.YearFee)					
-				};
-				anuResults.Add(result);
-				this.IsCalculated(this, new ResultEventArgs() { arg = anuResults });
-				return;
-			}
+			var metroWindow = (Application.Current.MainWindow as MetroWindow);
+			metroWindow.MetroDialogOptions.ColorScheme = MetroDialogColorScheme.Theme;
+			metroWindow.MetroDialogOptions.MaximumBodyHeight = 60;
+			return await metroWindow.ShowMessageAsync(title, message, dialogStyle, metroWindow.MetroDialogOptions);
+		}
 
-			if(AnnuPay)
+		// Start calculation with inputed values
+		public async void Calculate()
+		{
+			try
 			{
-				System.Diagnostics.Debug.WriteLine("Считаю аннуит. платежи");
-				return;
+				if (DiffPay)
+				{
+					
+				}
+				if (AnnuPay)
+				{
+					Models.AnuCalculation.CreditLength = int.Parse(CreditLength);
+					Models.AnuCalculation.RemCreditSum = double.Parse(CreditSum);
+					Models.AnuCalculation.YearFee = double.Parse(YearFee);
+					Models.AnuCalculation.TotalMonthPay = double.Parse(CreditSum);
+					BindableCollection<Models.AnuResults> results = new BindableCollection<Models.AnuResults>();
+					for (int i = 0; i++ < Models.AnuCalculation.CreditLength;)
+					{
+						results.Add(new Models.AnuResults()
+						{
+							MonthNum = i,
+							Date = StartDate.AddMonths(i),
+							RemCreditSum = System.Math.Round(Models.AnuCalculation.RemCreditSum, 2),
+							MonthPay = System.Math.Round(Models.AnuCalculation.MonthPay, 2),
+							MonthFee = System.Math.Round(Models.AnuCalculation.MonthFee, 2),
+							TotalMonthPay = System.Math.Round(Models.AnuCalculation.TotalMonthPay, 2)
+						});
+						Models.AnuCalculation.RemCreditSum = Models.AnuCalculation.RemCreditSum - Models.AnuCalculation.MonthPay;
+					}
+					var resultTab = Conductor.Items.ElementAt(Conductor.Items.IndexOf(this) + 1);
+					(resultTab as ResultViewModel).IsEnabled = true;
+					(resultTab as ResultViewModel).AnuResults = results;
+					Conductor.ActiveItem = resultTab;
+					return;
+				}
 			}
-		}		
+			catch (System.Exception ex)
+			{
+				await ShowMessageAsync("Error", ex.ToString(), MessageDialogStyle.Affirmative);
+			}
+		}
 
 		// Guard property for Reset method
 		public bool CanReset
@@ -110,7 +135,9 @@ namespace CreditCalc.ViewModels
 			YearFee = string.Empty;
 			MonthFee = string.Empty;
 			StartDate = System.DateTime.Today;
-			this.IsReseted(this, new System.EventArgs());
+			var resultTab = Conductor.Items.ElementAt(Conductor.Items.IndexOf(this) + 1);
+			(resultTab as ResultViewModel).IsEnabled = false;
+			this.ClearAllPropertyErrors();
 		}
 
 		/// <summary>
@@ -130,7 +157,7 @@ namespace CreditCalc.ViewModels
 	}
 	#endregion
 
-	#region ValidationRules
+	#region Validator
 	// Entity validator for ViewModel
 	class InputDataViewModelValidator : AbstractValidator<InputDataViewModel>
 	{
@@ -139,11 +166,11 @@ namespace CreditCalc.ViewModels
 			CascadeMode = CascadeMode.StopOnFirstFailure;
 
 			RuleFor(x => x.CreditSum).NotEmpty().WithMessage("{PropertyName} не может быть пустым").Matches(@"^\d+$").WithMessage("Разрешены только числовые значения");
-			RuleFor(x => x.YearFee).NotEmpty().WithMessage("Поле не может быть пустым").Matches(@"^\d+(\.\d{1,2})?$").WithMessage("Разрешены только числовые значения");
-			RuleFor(x => x.CreditLength).NotEmpty().WithMessage("Поле не может быть пустым").Matches(@"^\d+$").WithMessage("Разрешены только числовые значения");
-			RuleFor(x => x.MonthFee).NotEmpty().WithMessage("Поле не может быть пустым").Matches(@"^\d+(\.\d{1,2})?$").WithMessage("Разрешены только числовые значения");
+			RuleFor(x => x.YearFee).NotEmpty().WithMessage("{PropertyName} не может быть пустым").Matches(@"^\d{1,2}(\.\d{1,2})?$").WithMessage("Только двухзначные нецелочисленные значения");
+			RuleFor(x => x.CreditLength).NotEmpty().WithMessage("{PropertyName} не может быть пустым").Matches(@"^\d+$").WithMessage("Разрешены только числовые значения");
+			RuleFor(x => x.MonthFee).NotEmpty().WithMessage("{PropertyName} не может быть пустым").Matches(@"^\d{1,2}(\.\d{1,2})?$").WithMessage("Только двухзначные нецелочисленные значения");
 		}
 	}
 	#endregion
-	
+
 }

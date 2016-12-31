@@ -17,7 +17,7 @@
     <TabControl ItemsSource="{Binding Items}" SelectedItem="{Binding ActiveItem}" DisplayMemberPath="DisplayName" Margin="5 0 0 0">
         <TabControl.Resources>
             <Style TargetType="{x:Type TabItem}" BasedOn="{StaticResource MetroTabItem}">
-                <Setter Property="IsEnabled" Value="{Binding Enabled}" />
+                <Setter Property="IsEnabled" Value="{Binding IsEnabled}" />
             </Style>
         </TabControl.Resources>
         <TabControl.ContentTemplate>

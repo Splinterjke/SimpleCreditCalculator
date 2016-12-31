@@ -1,14 +1,13 @@
 ﻿using System;
-using CreditCalc.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CreditCalc.Services
+namespace CreditCalc.ViewModels
 {
-	internal class AnuCalculation
+	public interface TabItem : Stylet.IScreen
 	{
-		
+
 	}
 }

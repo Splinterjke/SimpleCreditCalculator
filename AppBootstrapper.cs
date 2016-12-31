@@ -5,6 +5,8 @@ using System.Windows;
 using System;
 using System.Windows.Threading;
 using FluentValidation;
+using System.Reflection;
+using System.Linq;
 
 namespace CreditCalc
 {
@@ -18,10 +20,10 @@ namespace CreditCalc
 
 		protected override void ConfigureIoC(IStyletIoCBuilder builder)
 		{
-			// Bind your own types. Concrete types are automatically self-bound.
-			//builder.Bind<IMyInterface>().To<Type>();
+			// Bind your own types. Concrete types are automatically self-bound.			
 			builder.Bind(typeof(IModelValidator<>)).To(typeof(ValidationAdapter<>));
 			builder.Bind(typeof(IValidator<>)).ToAllImplementations();
+			builder.Bind(typeof(TabItem)).ToAllImplementations();
 		}
 
 		//protected override void Configure()
